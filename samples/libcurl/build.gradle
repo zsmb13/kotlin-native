@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-4.6:1.8.1-SNAPSHOT"
+    }
+}
+
 apply plugin: 'konan'
 
 konan.targets = ['macbook', 'linux']
@@ -24,5 +35,28 @@ publishing {
             url = localMavenRepo
         }
     }
+}
+apply plugin: 'com.jfrog.bintray'
+
+//
+// TODO: this should be somehow generalized, e.g. against vm with bintray
+//
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    pkg {
+        userOrg = 'minamoto-test'
+        repo = 'kotlinx'
+        name = 'maven'
+        version {
+            name = project.version
+            vcsTag = project.version
+            released  = new Date()
+        }
+    }
+}
+
+bintrayUpload.doFirst {
+    publications = project.publishing.publications
 }
 
