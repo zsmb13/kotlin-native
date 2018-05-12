@@ -125,8 +125,9 @@ open class KonanFramework(name: String,
     override val defaultBaseDir: File
         get() = project.konanBinBaseDir
 
-    override fun targetIsSupported(target: KonanTarget): Boolean =
-        target == MACOS_X64 || target == IOS_ARM64 || target == IOS_X64
+    override fun targetIsSupported(target: KonanTarget) =
+            target == MACOS_X64 || target == IOS_ARM64 || target == IOS_X64 ||
+            target == WATCHOS_ARM32 || target == WATCHOS_X64
 }
 
 open class KonanLibrary(name: String,

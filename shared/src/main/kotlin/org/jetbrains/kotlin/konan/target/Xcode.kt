@@ -16,7 +16,6 @@
 
 package org.jetbrains.kotlin.konan.target
 
-import org.jetbrains.kotlin.konan.KonanExternalToolFailure
 import org.jetbrains.kotlin.konan.exec.Command
 import org.jetbrains.kotlin.konan.file.File
 
@@ -25,6 +24,8 @@ interface Xcode {
     val macosxSdk: String
     val iphoneosSdk: String
     val iphonesimulatorSdk: String
+    val watchosSdk: String
+    val watchsimulatorSdk: String
     val version: String
 
     companion object {
@@ -44,6 +45,8 @@ private object CurrentXcode : Xcode {
     override val macosxSdk by lazy { getSdkPath("macosx") }
     override val iphoneosSdk by lazy { getSdkPath("iphoneos") }
     override val iphonesimulatorSdk by lazy { getSdkPath("iphonesimulator") }
+    override val watchosSdk by lazy { getSdkPath("watchos") }
+    override val watchsimulatorSdk by lazy { getSdkPath("watchsimulator") }
 
     override val version by lazy {
         xcrun("xcodebuild", "-version")

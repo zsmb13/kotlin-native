@@ -1,0 +1,10 @@
+depends = darwin posix Foundation UIKit
+language = Objective-C
+package = platform.ClockKit
+headers = ClockKit/ClockKit.h
+
+headerFilter = ClockKit/**
+
+compilerOpts = -framework ClockKit
+linkerOpts = -framework ClockKit
+

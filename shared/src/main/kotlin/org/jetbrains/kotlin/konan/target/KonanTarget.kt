@@ -51,8 +51,11 @@ sealed class KonanTarget(override val name: String, val family: Family, val arch
     object LINUX_MIPS32 :   KonanTarget( "linux_mips32",    Family.LINUX,   Architecture.MIPS32)
     object LINUX_MIPSEL32 : KonanTarget( "linux_mipsel32",  Family.LINUX,   Architecture.MIPSEL32)
     object WASM32 :         KonanTarget( "wasm32",          Family.WASM,    Architecture.WASM32)
+    object WATCHOS_ARM32 :  KonanTarget( "watchos_arm32",   Family.IOS,     Architecture.ARM32)
+    object WATCHOS_X64 :    KonanTarget( "watchos_x64",     Family.IOS,     Architecture.X64)
 
-    // Tunable targets
+
+    // Tunable targets.
     class ZEPHYR(val subName: String, val genericName: String = "zephyr") : KonanTarget("${genericName}_$subName", Family.ZEPHYR, Architecture.ARM32)
 
     override fun toString() = name
@@ -126,7 +129,12 @@ open class HostManager(protected val distribution: Distribution = Distribution()
     fun targetManager(userRequest: String? = null): TargetManager = TargetManagerImpl(userRequest, this)
 
     // TODO: need a better way to enumerated predefined targets.
-    private val predefinedTargets = listOf(ANDROID_ARM32, ANDROID_ARM64, IOS_ARM64, IOS_X64, LINUX_X64, MINGW_X64, MACOS_X64, LINUX_ARM32_HFP, LINUX_MIPS32, LINUX_MIPSEL32, WASM32)
+    private val predefinedTargets = listOf(
+            ANDROID_ARM32, ANDROID_ARM64,
+            IOS_ARM64, IOS_X64, WATCHOS_ARM32, WATCHOS_X64,
+            LINUX_X64, LINUX_ARM32_HFP, LINUX_MIPS32, LINUX_MIPSEL32,
+            MINGW_X64, MACOS_X64,
+            WASM32)
 
     private val zephyrSubtargets = distribution.availableSubTarget("zephyr").map { ZEPHYR(it) }
 
@@ -180,7 +188,9 @@ open class HostManager(protected val distribution: Distribution = Distribution()
                     KonanTarget.IOS_X64,
                     KonanTarget.ANDROID_ARM32,
                     KonanTarget.ANDROID_ARM64,
-                    KonanTarget.WASM32
+                    KonanTarget.WASM32,
+                    KonanTarget.WATCHOS_ARM32,
+                    KonanTarget.WATCHOS_X64
                 ) + zephyrSubtargets
                 else ->
                     throw TargetSupportException("Unknown host platform: $host")
@@ -251,6 +261,8 @@ open class HostManager(protected val distribution: Distribution = Distribution()
                 "ipad"        to "ios_arm64",
                 "ios"         to "ios_arm64",
                 "iphone_sim"  to "ios_x64",
+                "watchos"     to "watchos_arm32",
+                "watchos_sim" to "watchos_x64",
                 "mingw"       to "mingw_x64"
         )
 

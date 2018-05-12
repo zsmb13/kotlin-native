@@ -61,6 +61,13 @@ class ClangArgs(private val configurables: Configurables) : Configurables by con
                 KonanTarget.IOS_X64 ->
                     listOf("-stdlib=libc++", "-isysroot", absoluteTargetSysRoot, "-miphoneos-version-min=8.0.0")
 
+                KonanTarget.WATCHOS_ARM32 ->
+                    listOf("-stdlib=libc++", "-arch", "armv7", "-isysroot", absoluteTargetSysRoot, "-mwatchos-version-min=3.0")
+
+                KonanTarget.WATCHOS_X64 ->
+                    listOf("-stdlib=libc++", "-isysroot", absoluteTargetSysRoot, "-mwatchos-version-min=3.0")
+
+
                 KonanTarget.ANDROID_ARM32 ->
                     listOf("-target", targetArg!!,
                             "--sysroot=$absoluteTargetSysRoot",
@@ -124,10 +131,7 @@ class ClangArgs(private val configurables: Configurables) : Configurables by con
             KonanTarget.MACOS_X64 ->
                 listOf("-DKONAN_OSX=1", "-DKONAN_OBJC_INTEROP=1")
 
-            KonanTarget.IOS_ARM64 ->
-                listOf("-DKONAN_OBJC_INTEROP=1")
-
-            KonanTarget.IOS_X64 ->
+            KonanTarget.IOS_ARM64, KonanTarget.IOS_X64, KonanTarget.WATCHOS_ARM32, KonanTarget.WATCHOS_X64 ->
                 listOf("-DKONAN_OBJC_INTEROP=1")
 
             KonanTarget.ANDROID_ARM32 ->

@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.konan.file.File
 import org.jetbrains.kotlin.konan.target.CompilerOutputKind
 import org.jetbrains.kotlin.konan.target.KonanTarget
 import org.jetbrains.kotlin.konan.target.AppleConfigurables
+import org.jetbrains.kotlin.konan.target.Family
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.isSubpackageOf
@@ -37,7 +38,7 @@ internal class ObjCExport(val codegen: CodeGenerator) {
     private val target get() = context.config.target
 
     internal fun produce() {
-        if (target != KonanTarget.IOS_ARM64 && target != KonanTarget.IOS_X64 && target != KonanTarget.MACOS_X64) return
+        if (target.family != Family.IOS && target.family != Family.OSX) return
 
         if (!context.config.produce.isNativeBinary) return // TODO: emit RTTI to the same modules as classes belong to.
 
@@ -77,9 +78,9 @@ internal class ObjCExport(val codegen: CodeGenerator) {
         headerGenerator.translateModule()
 
         val framework = File(context.config.outputFile)
-        val frameworkContents = when (target) {
-            KonanTarget.IOS_ARM64, KonanTarget.IOS_X64 -> framework
-            KonanTarget.MACOS_X64 -> framework.child("Versions/A")
+        val frameworkContents = when {
+            target.family == Family.IOS -> framework
+            target == KonanTarget.MACOS_X64 -> framework.child("Versions/A")
             else -> error(target)
         }
 
@@ -130,6 +131,8 @@ internal class ObjCExport(val codegen: CodeGenerator) {
         val platform = when (target) {
             KonanTarget.IOS_ARM64 -> "iPhoneOS"
             KonanTarget.IOS_X64 -> "iPhoneSimulator"
+            KonanTarget.WATCHOS_ARM32 -> TODO()
+            KonanTarget.WATCHOS_X64 -> TODO()
             KonanTarget.MACOS_X64 -> "MacOSX"
             else -> error(target)
         }
@@ -163,7 +166,7 @@ internal class ObjCExport(val codegen: CodeGenerator) {
 
         """.trimIndent())
 
-
+        // TODO: handle WatchOS here properly.
         contents.append(when (target) {
             KonanTarget.IOS_ARM64,
             KonanTarget.IOS_X64 -> """

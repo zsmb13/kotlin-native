@@ -1,0 +1,9 @@
+depends = darwin posix CoreVideo
+language = Objective-C
+package = platform.CoreML
+headers = CoreML/CoreML.h
+
+headerFilter = CoreML/**
+
+compilerOpts = -framework CoreML
+linkerOpts = -framework CoreML
