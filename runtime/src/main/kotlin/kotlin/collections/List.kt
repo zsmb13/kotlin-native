@@ -118,3 +118,31 @@ public interface MutableList<E> : List<E>, MutableCollection<E> {
     // View
     override fun subList(fromIndex: Int, toIndex: Int): MutableList<E>
 }
+
+internal actual object EmptyList : List<Nothing>, RandomAccess {
+
+    actual override fun equals(other: Any?): Boolean = other is List<*> && other.isEmpty()
+    actual override fun hashCode(): Int = 1
+    actual override fun toString(): String = "[]"
+
+    actual override val size: Int get() = 0
+    actual override fun isEmpty(): Boolean = true
+    actual override fun contains(element: Nothing): Boolean = false
+    actual override fun containsAll(elements: Collection<Nothing>): Boolean = elements.isEmpty()
+
+    actual override fun get(index: Int): Nothing = throw IndexOutOfBoundsException("Empty list doesn't contain element at index $index.")
+    actual override fun indexOf(element: Nothing): Int = -1
+    actual override fun lastIndexOf(element: Nothing): Int = -1
+
+    actual override fun iterator(): Iterator<Nothing> = EmptyIterator
+    actual override fun listIterator(): ListIterator<Nothing> = EmptyIterator
+    actual override fun listIterator(index: Int): ListIterator<Nothing> {
+        if (index != 0) throw IndexOutOfBoundsException("Index: $index")
+        return EmptyIterator
+    }
+
+    actual override fun subList(fromIndex: Int, toIndex: Int): List<Nothing> {
+        if (fromIndex == 0 && toIndex == 0) return this
+        throw IndexOutOfBoundsException("fromIndex: $fromIndex, toIndex: $toIndex")
+    }
+}

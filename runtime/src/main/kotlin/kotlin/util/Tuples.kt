@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-package kotlin.io
+package kotlin
 
-internal actual interface Serializable
+actual data class Pair<out A, out B> actual constructor(
+        actual val first: A,
+        actual val second: B
+) {
+    actual override fun toString(): String = "($first, $second)"
+}
+
+actual data class Triple<out A, out B, out C> actual constructor(
+        actual val first: A,
+        actual val second: B,
+        actual val third: C
+) {
+    actual override fun toString(): String = "($first, $second, $third)"
+}

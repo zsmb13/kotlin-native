@@ -24,3 +24,19 @@ internal actual fun <K, V> Map<out K, V>.toSingletonMap(): Map<K, V>
         = this.toMutableMap() // TODO
 
 
+internal actual object EmptyMap : Map<Any?, Nothing> {
+
+    actual override fun equals(other: Any?): Boolean = other is Map<*, *> && other.isEmpty()
+    actual override fun hashCode(): Int = 0
+    actual override fun toString(): String = "{}"
+
+    actual override val size: Int get() = 0
+    actual override fun isEmpty(): Boolean = true
+
+    actual override fun containsKey(key: Any?): Boolean = false
+    actual override fun containsValue(value: Nothing): Boolean = false
+    actual override fun get(key: Any?): Nothing? = null
+    actual override val entries: Set<Map.Entry<Any?, Nothing>> get() = EmptySet
+    actual override val keys: Set<Any?> get() = EmptySet
+    actual override val values: Collection<Nothing> get() = EmptyList
+}

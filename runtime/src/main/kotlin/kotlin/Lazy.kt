@@ -62,3 +62,32 @@ public actual fun <T> lazy(mode: LazyThreadSafetyMode, initializer: () -> T): La
 @FixmeConcurrency
 @Suppress("UNUSED_PARAMETER")
 public actual fun <T> lazy(lock: Any?, initializer: () -> T): Lazy<T> = TODO()//SynchronizedLazyImpl(initializer, lock)
+
+internal object UNINITIALIZED_VALUE
+
+// internal to be called from lazy in JS
+internal actual class UnsafeLazyImpl<out T> actual constructor(initializer: () -> T) : Lazy<T> {
+    private var initializer: (() -> T)? = initializer
+    private var _value: Any? = UNINITIALIZED_VALUE
+
+    actual override val value: T
+        get() {
+            if (_value === UNINITIALIZED_VALUE) {
+                _value = initializer!!()
+                initializer = null
+            }
+            @Suppress("UNCHECKED_CAST")
+            return _value as T
+        }
+
+    actual override fun isInitialized(): Boolean = _value !== UNINITIALIZED_VALUE
+
+    actual override fun toString(): String = if (isInitialized()) value.toString() else "Lazy value not initialized yet."
+}
+
+internal actual class InitializedLazyImpl<out T> actual constructor(actual override val value: T) : Lazy<T> {
+
+    actual override fun isInitialized(): Boolean = true
+
+    actual override fun toString(): String = value.toString()
+}
