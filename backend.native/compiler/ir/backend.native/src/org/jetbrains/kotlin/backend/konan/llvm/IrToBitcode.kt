@@ -50,7 +50,7 @@ import org.jetbrains.kotlin.types.typeUtil.isNothing
 import org.jetbrains.kotlin.types.typeUtil.isPrimitiveNumberType
 import org.jetbrains.kotlin.types.typeUtil.isUnit
 
-val IrClassSymbol.objectIsShared get() = owner.origin == DECLARATION_ORIGIN_ENUM
+val IrClassSymbol.objectIsShared get() = true
 
 internal fun emitLLVM(context: Context) {
     val irModule = context.irModule!!
